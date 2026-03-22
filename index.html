@@ -47,7 +47,8 @@ header{position:sticky;top:0;z-index:200;height:56px;
 .layout{display:flex;min-height:calc(100vh - 56px);position:relative;z-index:1}
 .sidebar{width:240px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);
   position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;
-  scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+  transition:transform .28s cubic-bezier(.4,0,.2,1);}
 .sidebar::-webkit-scrollbar{width:4px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 .sb-section{padding:.8rem 1rem .4rem;font-size:.65rem;font-weight:600;letter-spacing:.8px;
@@ -261,21 +262,181 @@ td{padding:9px 11px;vertical-align:top;font-size:.8rem;line-height:1.6}
 #topbtn.show{display:flex}
 
 /* ════════ RESPONSIVE ════════ */
+/* ════════ MOBILE BOTTOM NAV ════════ */
+.mob-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:rgba(13,15,20,.97);backdrop-filter:blur(20px);
+  border-top:1px solid var(--border2);
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+  grid-template-columns:repeat(4,1fr);
+  gap:2px;
+}
+.mob-nav-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:6px 4px;border-radius:8px;border:none;
+  background:none;color:var(--text3);font-size:.6rem;font-weight:500;
+  cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;
+}
+.mob-nav-btn .mico{font-size:1.2rem;line-height:1}
+.mob-nav-btn.active{color:var(--acc);background:rgba(79,142,247,.1)}
+
+/* ════════ MOBILE SIDEBAR OVERLAY ════════ */
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;z-index:255;
+  background:rgba(0,0,0,.55);
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.sidebar-overlay.open{display:block}
+.sidebar.mob-open{
+  transform:translateX(0)!important;
+  box-shadow:6px 0 48px rgba(0,0,0,.7);
+  z-index:260;
+}
+
+/* ════════ MOBILE PASSAGE TABS ════════ */
+.mob-passage-tabs{
+  display:none;
+  overflow-x:auto;padding:.6rem 1rem;gap:6px;
+  border-bottom:1px solid var(--border);
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.mob-passage-tabs::-webkit-scrollbar{display:none}
+.mob-ptab{
+  flex-shrink:0;padding:6px 14px;border-radius:99px;
+  border:1px solid var(--border2);font-size:.74rem;font-weight:500;
+  background:var(--bg2);color:var(--text3);white-space:nowrap;cursor:pointer;
+}
+.mob-ptab.active{background:rgba(79,142,247,.12);border-color:rgba(79,142,247,.4);color:var(--acc)}
+
+/* ════════ CARD VIEW FOR MOBILE (replaces table) ════════ */
+.word-cards{display:none;flex-direction:column;gap:10px;padding-bottom:1rem}
+.word-card{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);
+  padding:1rem;
+}
+.wc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:.6rem}
+.wc-word{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem}
+.wc-pron{font-size:.7rem;color:var(--acc);font-style:italic;margin-top:2px}
+.wc-easy{font-size:.64rem;color:var(--text3)}
+.wc-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.wc-body{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .8rem;font-size:.78rem}
+.wc-section{}
+.wc-label{font-size:.6rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
+.wc-meaning{color:var(--text);line-height:1.5}
+.wc-guj{color:var(--guj);font-family:'Noto Sans Gujarati','DM Sans',sans-serif}
+.wc-syns{display:flex;flex-wrap:wrap;gap:3px}
+.wc-syn{font-size:.64rem;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border2)}
+.wc-write{grid-column:1/-1;background:var(--bg3);border-radius:8px;padding:.6rem .7rem;margin-top:.2rem}
+.wc-write-label{font-size:.6rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:3px}
+.wc-example{font-size:.74rem;color:var(--text2);font-style:italic;line-height:1.6;border-left:2px solid var(--acc2);padding-left:.6rem}
+.wc-col{font-size:.7rem;color:var(--teal);margin-top:.3rem}
+.wc-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;padding-top:.6rem;border-top:1px solid var(--border)}
+.wc-band{font-size:.64rem;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:var(--amber)}
+
+/* ════════ RESPONSIVE BREAKPOINTS ════════ */
+
+/* Tablet 768–1024 */
+@media(max-width:1024px){
+  .sidebar{width:200px}
+  .content{padding:1.2rem}
+}
+
+/* Mobile <768 */
 @media(max-width:768px){
-  .sidebar{display:none}
-  .content{padding:1rem}
-  .hero{padding:1rem}
-  .hero h1{font-size:1.1rem}
+  /* sidebar becomes slide-in overlay */
+  .sidebar{
+    position:fixed;top:56px;left:0;bottom:0;z-index:260;
+    width:80vw;max-width:300px;
+    transform:translateX(-105%);
+    height:calc(100vh - 56px);
+  }
+  .layout{flex-direction:column}
+  .content{padding:.8rem .8rem 80px}
+
+  /* header */
+  .logo-sub{display:none}
+  header{padding:0 1rem}
+  .hdr-pill{font-size:.65rem;padding:3px 8px}
+
+  /* hero */
+  .hero{padding:1rem;flex-direction:column;gap:.8rem}
+  .hero-left h1{font-size:1.2rem}
+  .hero-stats{justify-content:flex-start;gap:1rem}
+  .hstat-n{font-size:1.3rem}
+
+  /* mode tabs → hidden, replaced by bottom nav */
+  .mode-tabs{display:none}
+
+  /* mobile bottom nav */
+  .mob-nav{display:grid}
+
+  /* mobile passage tabs */
+  .mob-passage-tabs{display:flex}
+
+  /* hide desktop table, show cards */
+  .tbl-wrap{display:none}
+  .word-cards{display:flex}
+  .row-count{display:none}
+  .legend{font-size:.65rem;flex-wrap:wrap;gap:8px}
+
+  /* controls */
+  .controls{padding:.5rem 0 .4rem;gap:5px}
+  .fbtn{padding:4px 10px;font-size:.7rem}
+  .srch{width:100%;margin-left:0;margin-top:4px}
+  .srch input{width:100%}
+  .controls{flex-wrap:wrap}
+
+  /* passage header */
+  .passage-header{padding:.8rem 1rem}
+  .ph-num{font-size:1.6rem;min-width:32px}
+  .ph-title{font-size:.9rem}
+
+  /* flashcard */
+  .fc-wrap{max-width:100%}
+  .fc-card{min-height:260px}
+  .fc-inner{min-height:260px}
+  .fc-word{font-size:1.6rem}
+  .fc-controls{gap:8px}
+  .fc-btn{padding:8px 14px;font-size:.78rem}
+  .fc-filter{flex-direction:column;gap:6px}
+  .fc-filter>div{flex-wrap:wrap}
+
+  /* spell */
+  .spell-wrap{max-width:100%}
+  .spell-score{gap:8px}
+  .ss-box{padding:.4rem .8rem;min-width:60px}
+  .ss-n{font-size:1.2rem}
+  .spell-input{font-size:.9rem}
+  .sp-filter{flex-direction:column;gap:6px}
+
+  /* writing grid */
   .writing-grid{grid-template-columns:1fr}
-  .srch input{width:130px}
+  .w-filters{flex-wrap:wrap;gap:5px}
+
+  /* top btn above bottom nav */
+  #topbtn{bottom:72px;right:14px}
+}
+
+/* Very small phones */
+@media(max-width:360px){
+  .mob-nav-btn{font-size:.55rem}
+  .hero-left h1{font-size:1rem}
+  .fc-word{font-size:1.3rem}
 }
 </style>
 </head>
 <body>
 
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sb-overlay" onclick="closeSidebar(event)"></div>
+
 <!-- HEADER -->
 <header>
-  <div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <button id="mob-menu-btn" onclick="toggleSidebar()" style="display:none;background:none;border:1px solid var(--border2);border-radius:7px;color:var(--text2);padding:5px 8px;font-size:.9rem">☰</button>
     <span class="logo">IELTS Vocab Lab</span>
     <span class="logo-sub">Cambridge Academic</span>
   </div>
@@ -285,10 +446,13 @@ td{padding:9px 11px;vertical-align:top;font-size:.8rem;line-height:1.6}
   </div>
 </header>
 
+<!-- MOBILE PASSAGE TABS -->
+<div class="mob-passage-tabs" id="mob-passage-tabs"></div>
+
 <div class="layout">
 
 <!-- SIDEBAR -->
-<nav class="sidebar" id="sidebar"></nav>
+<nav class="sidebar" id="sidebar" onclick="event.stopPropagation()"></nav>
 
 <!-- CONTENT -->
 <main class="content">
@@ -351,6 +515,7 @@ td{padding:9px 11px;vertical-align:top;font-size:.8rem;line-height:1.6}
         <tbody id="vtbody"></tbody>
       </table>
     </div>
+    <div class="word-cards" id="word-cards"></div>
     <div class="row-count" id="vcount"></div>
   </div>
 
@@ -441,10 +606,142 @@ td{padding:9px 11px;vertical-align:top;font-size:.8rem;line-height:1.6}
 
 <button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mob-nav" id="mob-nav">
+  <button class="mob-nav-btn active" onclick="mobSetMode('vocab',this)"><span class="mico">📖</span>Vocab</button>
+  <button class="mob-nav-btn" onclick="mobSetMode('flash',this)"><span class="mico">🃏</span>Cards</button>
+  <button class="mob-nav-btn" onclick="mobSetMode('spell',this)"><span class="mico">✏️</span>Spell</button>
+  <button class="mob-nav-btn" onclick="mobSetMode('write',this)"><span class="mico">📝</span>Writing</button>
+</nav>
+
 <script>
 // ══════════════════════════════════════════════════
-// DATA STORE — add more tests here easily!
+// MOBILE HELPERS
 // ══════════════════════════════════════════════════
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sb-overlay');
+  const isOpen = sb.classList.contains('mob-open');
+  if(isOpen){
+    closeSidebar();
+  } else {
+    sb.classList.add('mob-open');
+    document.body.style.overflow = 'hidden';
+    // add overlay with tiny delay so opening click doesn't immediately close
+    setTimeout(()=>{ ov.classList.add('open'); }, 50);
+  }
+}
+function closeSidebar(e){
+  if(e) e.stopPropagation();
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sb-overlay');
+  sb.classList.remove('mob-open');
+  ov.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function isMobile(){ return window.innerWidth <= 768; }
+
+// Show/hide menu button based on screen size
+function updateMobUI(){
+  const btn = document.getElementById('mob-menu-btn');
+  if(btn) btn.style.display = isMobile() ? 'block' : 'none';
+}
+window.addEventListener('resize', updateMobUI);
+updateMobUI();
+
+function mobSetMode(mode, el){
+  // sync with desktop mode tabs
+  document.querySelectorAll('.mode-tab').forEach((b,i)=>{
+    const modes = ['vocab','flash','spell','write'];
+    if(modes[i]===mode) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+  document.querySelectorAll('.mob-nav-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  // call the real setMode but without a desktop button reference
+  currentMode = mode;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+mode).classList.add('active');
+  if(mode==='flash') initFlash();
+  if(mode==='spell') initSpell();
+  if(mode==='write') renderWriting();
+  if(mode==='vocab') renderVocab();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Build mobile passage tabs
+function buildMobPassageTabs(){
+  const wrap = document.getElementById('mob-passage-tabs');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  DB.tests.forEach(t => {
+    t.passages.forEach((p, pi) => {
+      const btn = document.createElement('button');
+      btn.className = 'mob-ptab' + (p.id === currentPassage.id ? ' active' : '');
+      btn.textContent = 'P'+(pi+1)+' · '+p.title.split(' ')[0];
+      btn.onclick = () => {
+        document.querySelectorAll('.mob-ptab').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPassage = p;
+        // also update sidebar highlight
+        document.querySelectorAll('.sb-pass').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.sb-pass').forEach(b=>{
+          if(b.getAttribute('onclick')?.includes(p.id)) b.classList.add('active');
+        });
+        renderVocab(); updateHero();
+      };
+      wrap.appendChild(btn);
+    });
+  });
+}
+
+// Word cards renderer (mobile)
+function renderWordCards(words){
+  const wrap = document.getElementById('word-cards');
+  if(!wrap) return;
+  if(!words.length){ wrap.innerHTML='<div class="empty">No words found.</div>'; return; }
+  wrap.innerHTML = words.map(w => `
+    <div class="word-card">
+      <div class="wc-top">
+        <div>
+          <div class="wc-word">${w.w}</div>
+          <div class="wc-pron">${hs(w.ph)}</div>
+          <div class="wc-easy">say: ${w.e}</div>
+        </div>
+        <div class="wc-right">
+          <span class="${tagClass(w.t)}">${w.t}</span>
+          <button class="spk" onclick="speak('${w.w}')">🔊</button>
+        </div>
+      </div>
+      <div class="wc-body">
+        <div class="wc-section">
+          <div class="wc-label">Meaning</div>
+          <div class="wc-meaning">${w.m}</div>
+        </div>
+        <div class="wc-section">
+          <div class="wc-label">Gujarati</div>
+          <div class="wc-guj">${w.g}</div>
+        </div>
+        <div class="wc-section" style="grid-column:1/-1">
+          <div class="wc-label">Synonyms</div>
+          <div class="wc-syns">${w.syn.map(s=>`<span class="wc-syn">${s}</span>`).join('')}</div>
+        </div>
+        <div class="wc-write">
+          <div class="wc-write-label">✍️ Writing Task 2 — ${w.wr.use}</div>
+          <div class="wc-example">${w.wr.example}</div>
+          <div class="wc-col">Collocations: ${w.wr.col}</div>
+        </div>
+      </div>
+      <div class="wc-bottom">
+        <span class="wc-band">${w.wr.band}</span>
+        <span style="font-size:.68rem;color:var(--text3)">${currentPassage.title}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+
 const DB = {
   tests: [
     {
@@ -682,6 +979,7 @@ function buildSidebar(){
     `;
     sb.appendChild(testDiv);
   });
+  buildMobPassageTabs();
 }
 
 function toggleTest(el){
@@ -694,10 +992,10 @@ function selectPassage(pid, el){
   DB.tests.forEach(t => t.passages.forEach(p => {
     if(p.id === pid){ currentPassage = p; }
   }));
+  buildMobPassageTabs();
   renderVocab();
   updateHero();
-  if(currentMode==='vocab') return;
-  // reset filters in other modes
+  if(isMobile()) closeSidebar();
 }
 
 // ══════════════════════════════════════════════════
@@ -726,10 +1024,16 @@ function setMode(mode, el){
   el.classList.add('active');
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+mode).classList.add('active');
+  // sync mobile bottom nav
+  const modes = ['vocab','flash','spell','write'];
+  document.querySelectorAll('.mob-nav-btn').forEach((b,i)=>{
+    b.classList.toggle('active', modes[i]===mode);
+  });
   if(mode==='flash') initFlash();
   if(mode==='spell') initSpell();
   if(mode==='write') renderWriting();
   if(mode==='vocab') renderVocab();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ══════════════════════════════════════════════════
@@ -750,7 +1054,7 @@ function renderVocab(){
   document.getElementById('vph-count').textContent = p.words.length+' words';
   document.getElementById('vcount').textContent = `Showing ${words.length} of ${p.words.length} words`;
   const tb = document.getElementById('vtbody');
-  if(!words.length){ tb.innerHTML=`<tr><td colspan="8" class="empty">No results found.</td></tr>`; return; }
+  if(!words.length){ tb.innerHTML=`<tr><td colspan="8" class="empty">No results found.</td></tr>`; renderWordCards([]); return; }
   tb.innerHTML = words.map((w,i)=>`
     <tr>
       <td class="td-num">${i+1}</td>
@@ -771,6 +1075,7 @@ function renderVocab(){
       <td><button class="spk" onclick="speak('${w.w}')">🔊</button></td>
     </tr>
   `).join('');
+  renderWordCards(words);
 }
 
 function vFilter(f, el){
@@ -1050,14 +1355,215 @@ function buildWritingCards(){
 }
 
 // ══════════════════════════════════════════════════
+// PROGRESS TRACKER (localStorage)
+// ══════════════════════════════════════════════════
+const PROGRESS_KEY = 'ielts_vocab_progress';
+const STREAK_KEY   = 'ielts_vocab_streak';
+
+function loadProgress(){
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch(e){ return {}; }
+}
+function saveProgress(data){
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(data)); } catch(e){}
+}
+function markWordLearned(word){
+  const p = loadProgress();
+  p[word] = (p[word] || 0) + 1;
+  saveProgress(p);
+  updateProgressBadge();
+}
+function updateProgressBadge(){
+  const p  = loadProgress();
+  const learned = Object.keys(p).filter(k => p[k] >= 2).length;
+  const total   = allWords('all','all').length;
+  const el = document.getElementById('prog-badge');
+  if(el) el.textContent = `${learned}/${total} learned`;
+}
+
+// Streak tracker
+function checkStreak(){
+  try {
+    const data = JSON.parse(localStorage.getItem(STREAK_KEY) || '{"streak":0,"lastDate":""}');
+    const today = new Date().toDateString();
+    if(data.lastDate === today) return data.streak;
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    const streak = data.lastDate === yesterday ? data.streak + 1 : 1;
+    localStorage.setItem(STREAK_KEY, JSON.stringify({streak, lastDate: today}));
+    return streak;
+  } catch(e){ return 1; }
+}
+
+// Patch fcNext to mark words learned
+const _fcNextOrig = fcNext;
+function fcNext(got){
+  if(got && fcWords[fcIdx]) markWordLearned(fcWords[fcIdx].w);
+  if(got) fcCorrect++;
+  else fcWords.push(fcWords[fcIdx]);
+  fcIdx++;
+  showFcCard();
+}
+
+// Patch checkSpell to mark words learned on correct
+const _checkSpellOrig = checkSpell;
+function checkSpell(){
+  const inp = document.getElementById('sp-input');
+  const answer = inp.value.trim().toLowerCase();
+  const correct = spWords[spIdx].w.toLowerCase();
+  const res = document.getElementById('sp-result');
+  if(answer === correct){
+    inp.className='spell-input correct';
+    res.className='spell-result show ok';
+    res.textContent = '✓ Correct! Well done!';
+    spCorrect++;
+    markWordLearned(spWords[spIdx].w);
+  } else {
+    inp.className='spell-input wrong';
+    res.className='spell-result show bad';
+    res.innerHTML = `✗ Not quite. The correct spelling is: <strong>${spWords[spIdx].w}</strong>`;
+    spWrong++;
+  }
+  spIdx++;
+  updateSpScore();
+  document.getElementById('sp-next').style.display='block';
+}
+
+// ══════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ══════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  // Flashcard: Space = flip, Arrow right = got it, Arrow left = again
+  if(currentMode === 'flash' && document.getElementById('fc-card').style.display !== 'none'){
+    if(e.code === 'Space' && e.target.tagName !== 'INPUT'){ e.preventDefault(); flipCard(); }
+    if(e.code === 'ArrowRight'){ e.preventDefault(); fcNext(true); }
+    if(e.code === 'ArrowLeft' ){ e.preventDefault(); fcNext(false); }
+  }
+  // Spell: already handled via Enter keydown on input
+});
+
+// ══════════════════════════════════════════════════
+// SEARCH CLEAR BUTTON
+// ══════════════════════════════════════════════════
+function clearSearch(){
+  const el = document.getElementById('vsearch');
+  if(el){ el.value=''; vSearch(''); }
+}
+
+// ══════════════════════════════════════════════════
+// WRITING SECTION — Band filter
+// ══════════════════════════════════════════════════
+let wFilterBand = 'all';
+function setWBand(v, el){
+  wFilterBand = v;
+  el.closest('div').querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  buildWritingCards();
+}
+
+// Override buildWritingCards to include band filter
+const _buildWritingCardsOrig = buildWritingCards;
+function buildWritingCards(){
+  let words = allWords(wFilterTest,'all');
+  if(wFilterType !== 'all') words = words.filter(w => w.t === wFilterType);
+  if(wFilterBand !== 'all') words = words.filter(w => w.wr.band === wFilterBand);
+  const grid = document.getElementById('wgrid');
+  if(!words.length){ grid.innerHTML='<div class="empty">No words match this filter.</div>'; return; }
+  grid.innerHTML = words.map(w=>`
+    <div class="w-card">
+      <div class="w-card-head">
+        <div class="w-word">${w.w}</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <span class="${tagClass(w.t)}">${w.t}</span>
+          <span class="w-band">${w.wr.band}</span>
+        </div>
+      </div>
+      <div class="w-section">
+        <div class="w-label">📌 Use in essay when…</div>
+        <div class="w-text">${w.wr.use}</div>
+      </div>
+      <div class="w-section">
+        <div class="w-label">✍️ Band 7+ example</div>
+        <div class="w-example">${w.wr.example}</div>
+      </div>
+      <div class="w-section">
+        <div class="w-label">🔗 Collocations</div>
+        <div class="w-text" style="color:var(--teal)">${w.wr.col}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;padding-top:.5rem;border-top:1px solid var(--border)">
+        <div style="font-family:'Noto Sans Gujarati','DM Sans',sans-serif;font-size:.72rem;color:var(--guj)">${w.g}</div>
+        <button class="spk" onclick="speak('${w.w}')">🔊</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Override renderWriting to add Band filter row
+function renderWriting(){
+  const wf = document.getElementById('wf-filter');
+  wf.innerHTML = `
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:.5rem">
+      <span style="font-size:.72rem;color:var(--text3);white-space:nowrap">Test:</span>
+      <button class="fbtn active" onclick="setWTest('all',this)">All Tests</button>
+      ${DB.tests.map(t=>`<button class="fbtn" onclick="setWTest('${t.id}',this)">${t.name}</button>`).join('')}
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:.5rem">
+      <span style="font-size:.72rem;color:var(--text3);white-space:nowrap">Type:</span>
+      <button class="fbtn active" onclick="setWType('all',this)">All</button>
+      <button class="fbtn fn" onclick="setWType('Noun',this)">Nouns</button>
+      <button class="fbtn fv" onclick="setWType('Verb',this)">Verbs</button>
+      <button class="fbtn fa" onclick="setWType('Adjective',this)">Adjectives</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+      <span style="font-size:.72rem;color:var(--text3);white-space:nowrap">Band:</span>
+      <button class="fbtn active" onclick="setWBand('all',this)">All Bands</button>
+      <button class="fbtn" onclick="setWBand('Band 7+',this)" style="border-color:rgba(251,191,36,.3);color:var(--amber)">Band 7+</button>
+      <button class="fbtn" onclick="setWBand('Band 7',this)">Band 7</button>
+      <button class="fbtn" onclick="setWBand('Band 6',this)">Band 6</button>
+    </div>
+  `;
+  buildWritingCards();
+}
+
+// ══════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════
 buildSidebar();
 updateHero();
 renderVocab();
 
+// Add progress badge to header
+const hdrStats = document.querySelector('.hdr-stats');
+if(hdrStats){
+  const pb = document.createElement('div');
+  pb.className = 'hdr-pill';
+  pb.id = 'prog-badge';
+  pb.style.color = 'var(--acc3)';
+  hdrStats.appendChild(pb);
+  updateProgressBadge();
+}
+
+// Show streak on load
+const streak = checkStreak();
+if(streak > 1){
+  const tag = document.getElementById('hero-tag');
+  if(tag) tag.innerHTML += ` &nbsp;🔥 ${streak}-day streak`;
+}
+
+// Keyboard shortcut hint in flashcard
+document.getElementById('fc-flip-hint').innerHTML =
+  '👆 Click to flip &nbsp;·&nbsp; <kbd style="font-size:.65rem;padding:1px 5px;border-radius:4px;border:1px solid var(--border2);background:var(--bg3)">Space</kbd> flip &nbsp; <kbd style="font-size:.65rem;padding:1px 5px;border-radius:4px;border:1px solid var(--border2);background:var(--bg3)">→</kbd> got it &nbsp; <kbd style="font-size:.65rem;padding:1px 5px;border-radius:4px;border:1px solid var(--border2);background:var(--bg3)">←</kbd> again';
+
+// Add clear button to search
+const srchWrap = document.querySelector('.srch');
+if(srchWrap){
+  const clr = document.createElement('button');
+  clr.style.cssText='position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:.8rem;padding:0;line-height:1;cursor:pointer;';
+  clr.innerHTML='✕';
+  clr.onclick = clearSearch;
+  srchWrap.appendChild(clr);
+}
+
 window.addEventListener('scroll',()=>{
-  document.getElementById('topbtn').classList.toggle('show', window.scrollY>400);
+  document.getElementById('topbtn').classList.toggle('show', window.scrollY > 400);
 });
 </script>
 </body>
